@@ -15,7 +15,7 @@ alias ..='cd ..'
 # ls
 alias ls="ls -FG"
 alias l="ls -lAh"
-alias ll="ls -l"
+alias ll="ls -alh"
 alias la='ls -A'
 
 # git
@@ -31,6 +31,26 @@ alias gs='git status'
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
 alias changelog='git log `git log -1 --format=%H -- CHANGELOG*`..; cat CHANGELOG*'
 alias glo="git log --graph"
+
+# drush
+
+alias drushpw='drush user-password webmaster --password="123456789"'
+alias d='drush'
+alias dca='drush cc all'
+alias sdf='cdx 4 && cd sites/default/files'
+alias sdm='cdx 4 && cd sites/default/modules'
+alias sdt='cdx 4 && cd sites/default/themes'
+alias sat='cdx 4 && cd sites/all/themes'
+alias sam='cdx 4 && cd sites/all/modules'
+
+# directory history navigation
+
+alias c='dirs -v'
+alias cd='pushd > /dev/null'
+
+# file ownership
+
+alias chweb='sudo chmod -R ug+rw . && sudo chown -R $(whoami):$(whoami) .'
 
 # misc
 alias reload='. ~/.bash_profile'
