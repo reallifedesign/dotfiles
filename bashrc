@@ -63,7 +63,7 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 # Set prompt color to red for root- green for all other users
-if [ $(whoami) -eq "root" ]; then
+if [ $(whoami) == "root" ]; then
   PROMPT_COLOR="31m"
 else
   PROMPT_COLOR="32m"
