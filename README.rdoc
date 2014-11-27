@@ -1,26 +1,31 @@
-= Damian Lee Dot Files (cloned from Ryan Bates Dot Files)
+= Real Life Design dotfiles for bash, ubuntu with drupal/drush helper aliases
 
-These are config files to set up a system the way I like it.
+These are config files to set up a linux user (and root) accounts (tested on Ubuntu 14.04).
 
+This repo was forked from https://github.com/damiankloip/dotfiles which was in turn forked from others.
+
+Thanks go to all the contributors before me- all who can be seen in the contributors tab.
+
+This was forked for Drupal development and hosting at Real Life Design.
 
 == Installation
 
-  git clone git://github.com/damiankloip/dotfiles ~/.dotfiles
+  git clone git://github.com/reallifedesign/dotfiles ~/.dotfiles
   cd ~/.dotfiles
   rake install
 
 
 == Environment
 
-I am running on Mac OS X, but it will likely work on Linux as well with 
-minor fiddling. I primarily use zsh, but this includes some older bash 
-files as well. If you would like to switch to zsh, you can do so with 
-the following command.
+I am running on Ubuntu 14.04 LTS but it will likely work on other Linux distros and OSX (as originally intended) with
+minor fiddling. I primarily use bash although the original authors used zsh.
+
+If you would like to switch to zsh, you can do so with the following command.
 
   chsh -s /bin/zsh
 
 
-== Features
+== Rails Features (by original authors- not maintained here)
 
 I normally place all of my coding projects in ~/code, so this directory 
 can easily be accessed (and tab completed) with the "c" command.
