@@ -1,9 +1,3 @@
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
 source ~/.bash/functions
 source ~/.bash/aliases
 source ~/.bash/completions

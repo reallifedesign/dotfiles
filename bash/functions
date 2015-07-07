@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Find and replace within current directory
 findrep() {
   echo "Replacing '$1' with '$2' (case-sensitive) in this directory..."
