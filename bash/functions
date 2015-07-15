@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Open a file in PHPStorm
+of() {
+  # Remove trailing colon from path argument if exists 
+  echo $1 | sed "s/\(.*\):/\1/" | xargs pstorm
+}
+
 # Find and replace within current directory
 findrep() {
   echo "Replacing '$1' with '$2' (case-sensitive) in this directory..."
