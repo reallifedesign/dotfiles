@@ -10,22 +10,18 @@ This was forked for Drupal development and hosting at Real Life Design.
 
 == Installation (with prompts for gitconfig)
 
-```
-git clone git://github.com/reallifedesign/dotfiles ~/.dotfiles
-cd ~/.dotfiles
-rake install
-```
+  git clone git://github.com/reallifedesign/dotfiles ~/.dotfiles
+  cd ~/.dotfiles
+  rake install
 
 == Installation (without prompts gitconfig)
 
 This will derive your user and email for gitconfig as WHOAMI@HOSTNAME
 Therefore this is more suited to automated installations
 
-```
-git clone git://github.com/reallifedesign/dotfiles ~/.dotfiles
-cd ~/.dotfiles
-rake -f Rakefile.auto install
-```
+  git clone git://github.com/reallifedesign/dotfiles ~/.dotfiles
+  cd ~/.dotfiles
+  rake -f Rakefile.auto install
 
 == Environment
 
