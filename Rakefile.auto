@@ -1,0 +1,36 @@
+require 'rake'
+require 'erb'
+
+desc "install the dot files into user's home directory - without prompts"
+task :install do
+  Dir['*'].each do |file|
+    next if %w[Rakefile README.rdoc LICENSE gitconfig.erb].include? file
+
+    if File.exist?(File.join(ENV['HOME'], ".#{file.sub('.erb', '')}"))
+      if File.identical? file, File.join(ENV['HOME'], ".#{file.sub('.erb', '')}")
+        puts "identical ~/.#{file.sub('.erb', '').sub('.auto', '')}"
+      else
+        replace_file(file)
+      end
+    else
+      link_file(file)
+    end
+  end
+end
+
+def replace_file(file)
+  system %Q{rm -rf "$HOME/.#{file.sub('.erb', '').sub('.auto', '')}"}
+  link_file(file)
+end
+
+def link_file(file)
+  if file =~ /.erb$/
+    puts "generating ~/.#{file.sub('.erb', '').sub('.auto', '')}"
+    File.open(File.join(ENV['HOME'], ".#{file.sub('.erb', '').sub('.auto', '')}"), 'w') do |new_file|
+      new_file.write ERB.new(File.read(file)).result(binding)
+    end
+  else
+    puts "linking ~/.#{file}"
+    system %Q{ln -s "$PWD/#{file}" "$HOME/.#{file}"}
+  end
+end
