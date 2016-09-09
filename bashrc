@@ -9,11 +9,6 @@ if [ -f ~/.dotfiles/commonrc ]; then
   source ~/.dotfiles/commonrc
 fi
 
-# use .localrc for settings specific to one system
-if [ -f ~/.localrc ]; then
-  source ~/.localrc
-fi
-
 # source: http://b.sricola.com/post/16174981053/bash-autocomplete-for-ssh
 # parses .bash_history and attempts to autocomplete the host you are trying to SSH to
 complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
@@ -84,4 +79,15 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
+fi
+
+# Load php_executables file which dynamically alter the php CLI version
+# for php and drush commands based on PHP project config files.
+if [ -f ~/.php_executables ]; then
+  source ~/.php_executeables
+fi
+
+# use .localrc for settings specific to one system
+if [ -f ~/.localrc ]; then
+  source ~/.localrc
 fi

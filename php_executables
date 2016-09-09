@@ -1,0 +1,108 @@
+!#/bin/bash
+
+# Wrapper for php and drush executables to dynamically switch between
+# versions of php based on project configuration.
+#
+# The project configuration file should have a line somewhere in the
+# file like:
+#
+# type: php:5.6
+# or
+# type: hhvm
+#
+php_executables () {
+
+  # Define fallback PHP version is no config file is found.
+  php_version_default="php:5.6"
+
+  # Define PHP version files.
+  declare -A check_php_version_files
+  check_php_version_files[platformsh]=.platform.app.yaml
+  check_php_version_files[phpversion]=.php-version
+
+  show_debug=true
+
+  php_version_pwd="`pwd`"
+
+  php_version=""
+  dir_parts=$(echo $php_version_pwd | tr "/" "\n")
+
+  for check_php_version_file in "${check_php_version_files[@]}"; do
+
+    check_dir_composite=""
+
+    for part in $dir_parts; do
+
+      check_dir_composite=$check_dir_composite/$part
+
+      if [ -f "$check_dir_composite/$check_php_version_file" ]; then
+        php_definition_file="$check_dir_composite/$check_php_version_file"
+        php_version=`grep -E "type: (.*)" "$php_definition_file" | cut -d: -f2- | sed "s/'//g" | tr -d "[[:space:]]"`
+        break
+      fi
+
+    done
+
+  done
+
+  if [ -z "$php_version" ]; then
+
+    # If php version isn't found then fallback to default.
+    php_version=$php_version_default
+
+    if [ "$show_debug" == true ]; then
+      echo -e "Using default PHP version: "$php_version_default"\n"
+    fi
+
+  else
+
+    if [ "$show_debug" == true ]; then
+      echo -e "Using PHP version "$php_version" as defined in "$php_definition_file"\n"
+    fi
+
+  fi
+
+  # Define the drush executable - assumed to be in the $PATH.
+  drush_exec="`which drush`"
+
+  # Define the php executable and runtime options (notably the php.ini
+  # file location) to pass to the php executable.
+  case "$php_version" in
+
+    "php:5.6" | "5.6")
+      php_exec='/opt/phpfarm/inst/php-5.6.21/bin/php'
+      php_options="-c /opt/phpfarm/inst/php-5.6.21/lib/php.ini"
+      ;;
+    "php:7.0" | "7.0")
+      php_exec='/usr/bin/php'
+      php_options="-c /etc/php/7.0/cli/php.ini"
+      ;;
+    "hhvm")
+      php_exec='/usr/bin/hhvm'
+      php_options="-c /etc/hhvm/php.ini"
+      ;;
+
+  esac
+
+  # Capture the first argument as the executable to run.
+  php_command=$1
+
+  # Remove the first argument ready for passing to executable.
+  shift
+
+  # Execute php command.
+  if [ "$php_command" = "php" ]; then
+    "$php_exec" "$php_options" "$@"
+  fi
+
+  # Execute drush command.
+  if [ "$php_command" = "drush" ]; then
+    # See: https://www.drupal.org/node/1302418
+    DRUSH_PHP="$php_exec" "$php_exec" "$php_options" "$drush_exec" "$@"
+  fi
+
+}
+
+# Add php aliases which use the php_executables function.
+alias php="php_executables php"
+alias drush="php_executables drush"
