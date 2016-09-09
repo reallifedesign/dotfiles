@@ -46,7 +46,7 @@ alias sam='cdx 4 && cd sites/all/modules'
 # directory history navigation
 
 alias c='dirs -v'
-alias cd='pushd > /dev/null'
+#alias cd='pushd > /dev/null'
 
 # file ownership
 
