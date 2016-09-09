@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 # Wrapper for php and drush executables to dynamically switch between
 # versions of php based on project configuration.

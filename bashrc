@@ -84,7 +84,7 @@ fi
 # Load php_executables file which dynamically alter the php CLI version
 # for php and drush commands based on PHP project config files.
 if [ -f ~/.php_executables ]; then
-  source ~/.php_executeables
+  source ~/.php_executables
 fi
 
 # use .localrc for settings specific to one system
