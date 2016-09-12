@@ -3,17 +3,56 @@
 # Wrapper for php and drush executables to dynamically switch between
 # versions of php based on project configuration.
 #
+# Your PHP project should either have a .platform.app.yaml or
+# .php-version file in the root.
+#
 # The project configuration file should have a line somewhere in the
-# file like:
+# file like one of the following:
 #
+# type: php:5.5
 # type: php:5.6
-# or
+# type: php:7.0
+# type: 5.5
+# type: 5.6
+# type: 7.0
 # type: hhvm
-#
+
+# Define some default values for Ubuntu 14.04 which has hhvm installed
+# through Ubuntu's default repositories and php 5.5, 5.6, 7.0 with:
+# https://launchpad.net/~ondrej/+archive/ubuntu/php
+# If these defaults need to be overriden, don't edit this file.
+# Instead create a file at: ~/.php_settings and copy/paste the settings
+# between the ## START SETTINGS ## and ## END SETTINGS ## lines or just
+# the lines you wish to override.
+
+declare -A php_settings_exec
+declare -A php_settings_options
+
+## START SETTINGS - can be overriden in ~/.php_settings ##
+
+php_settings_exec[5.5]='/usr/bin/php5'
+php_settings_options[5.5]='-c /etc/php5/cli/php.ini'
+
+php_settings_exec[5.6]='/usr/bin/php5.6'
+php_settings_options[5.6]='-c /etc/php/5.6/cli/php.ini'
+
+php_settings_exec[7.0]='/usr/bin/php7.0'
+php_settings_options[7.0]='-c /etc/php/7.0/cli/php.ini'
+
+php_settings_exec[hhvm]='/usr/bin/hhvm'
+php_settings_options[hhvm]='-c /etc/hhvm/php.ini'
+
+## END SETTINGS ##
+
+# Allow overriding of PHP settings exectuables and options.
+if [ -f "$HOME/.php_settings" ]; then
+  source "$HOME/.php_settings"
+fi
+
 php_executables () {
 
   # Define fallback PHP version is no config file is found.
-  php_version_default="php:5.6"
+  php_version_default="5.6"
 
   # Define PHP version files.
   declare -A check_php_version_files
@@ -37,7 +76,7 @@ php_executables () {
 
       if [ -f "$check_dir_composite/$check_php_version_file" ]; then
         php_definition_file="$check_dir_composite/$check_php_version_file"
-        php_version=`grep -E "type: (.*)" "$php_definition_file" | cut -d: -f2- | sed "s/'//g" | tr -d "[[:space:]]"`
+        php_version=`grep -E "type: (.*)" "$php_definition_file" | cut -d: -f2- | sed "s/'//g" | sed "s/php://g" | tr -d "[[:space:]]"`
         break
       fi
 
@@ -66,23 +105,10 @@ php_executables () {
   drush_exec="`which drush`"
 
   # Define the php executable and runtime options (notably the php.ini
-  # file location) to pass to the php executable.
-  case "$php_version" in
-
-    "php:5.6" | "5.6")
-      php_exec='/opt/phpfarm/inst/php-5.6.21/bin/php'
-      php_options="-c /opt/phpfarm/inst/php-5.6.21/lib/php.ini"
-      ;;
-    "php:7.0" | "7.0")
-      php_exec='/usr/bin/php'
-      php_options="-c /etc/php/7.0/cli/php.ini"
-      ;;
-    "hhvm")
-      php_exec='/usr/bin/hhvm'
-      php_options="-c /etc/hhvm/php.ini"
-      ;;
-
-  esac
+  # file location) to pass to the php executable from the php settings
+  # arrays.
+  php_exec=${php_settings_exec[$php_version]}
+  php_options=${php_settings_options[$php_version]}
 
   # Capture the first argument as the executable to run.
   php_command=$1
