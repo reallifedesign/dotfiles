@@ -25,8 +25,8 @@
 # between the ## START SETTINGS ## and ## END SETTINGS ## lines or just
 # the lines you wish to override.
 
-declare -A php_settings_exec
-declare -A php_settings_options
+declare -a php_settings_exec
+declare -a php_settings_options
 
 ## START SETTINGS - can be overriden in ~/.php_settings ##
 
@@ -55,7 +55,7 @@ php_executables () {
   php_version_default="5.6"
 
   # Define PHP version files.
-  declare -A check_php_version_files
+  declare -a check_php_version_files
   check_php_version_files[platformsh]=.platform.app.yaml
   check_php_version_files[phpversion]=.php-version
 
