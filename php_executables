@@ -123,8 +123,25 @@ php_executables () {
 
   # Execute drush command.
   if [ "$php_command" = "drush" ]; then
+
+    # cd into child directory (working Drupal install) if found.
+    if [ -d _www ]; then
+      cd _www
+      cd_child_dir=true
+    elif [ -d www ]; then
+      cd www
+      cd_child_dir=true
+    else
+      cd_child_dir=false
+    fi
+
     # See: https://www.drupal.org/node/1302418
     DRUSH_PHP="$php_exec" "$php_exec" "$php_options" "$drush_exec" "$@"
+
+    # cd back to parent directory if drush is run from within a child directory.
+    if [ $cd_child_dir == true ]; then
+      cd ..
+    fi
   fi
 
 }
