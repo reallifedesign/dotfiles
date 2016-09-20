@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Wrapper for php and drush executables to dynamically switch between
 # versions of php based on project configuration.
@@ -96,19 +96,20 @@ php_executables () {
   else
 
     if [ "$show_debug" == true ]; then
-      echo -e "Using PHP version "$php_version" as defined in "$php_definition_file"\n"
+      echo -e "Using PHP version "$php_version" as defined in "$php_definition_file
     fi
 
   fi
-
-  # Define the drush executable - assumed to be in the $PATH.
-  drush_exec="`which drush`"
 
   # Define the php executable and runtime options (notably the php.ini
   # file location) to pass to the php executable from the php settings
   # arrays.
   php_exec=${php_settings_exec[$php_version]}
   php_options=${php_settings_options[$php_version]}
+
+  if [ "$show_debug" == true ]; then
+    echo -e "PHP executable and options: "$php_exec" "$php_options
+  fi
 
   # Capture the first argument as the executable to run.
   php_command=$1
@@ -121,8 +122,8 @@ php_executables () {
     "$php_exec" "$php_options" "$@"
   fi
 
-  # Execute drush command.
-  if [ "$php_command" = "drush" ]; then
+  # Execute drush or drupal console command.
+  if [ "$php_command" = "drush" ] || [ "$php_command" = "drupal" ]; then
 
     # cd into child directory (working Drupal install) if found.
     if [ -d _www ]; then
@@ -135,8 +136,22 @@ php_executables () {
       cd_child_dir=false
     fi
 
-    # See: https://www.drupal.org/node/1302418
-    DRUSH_PHP="$php_exec" "$php_exec" "$php_options" "$drush_exec" "$@"
+    if [ "$php_command" = "drush" ]; then
+
+      # Define the drush executable - assumed to be in the $PATH.
+      drush_exec="`which drush`"
+
+      # See: https://www.drupal.org/node/1302418
+      DRUSH_PHP="$php_exec" "$php_exec" "$php_options" "$drush_exec" "$@"
+
+    elif [ "$php_command" = "drupal" ]; then
+
+      # Define the drupal console executable - assumed to be in the $PATH.
+      drupal_exec="`which drupal`"
+
+      "$php_exec" "$php_options" "$drupal_exec" "$@"
+
+    fi
 
     # cd back to parent directory if drush is run from within a child directory.
     if [ $cd_child_dir == true ]; then
@@ -149,3 +164,4 @@ php_executables () {
 # Add php aliases which use the php_executables function.
 alias php="php_executables php"
 alias drush="php_executables drush"
+alias drupal="php_executables drupal"
