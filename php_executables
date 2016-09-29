@@ -146,8 +146,34 @@ php_executables () {
 
     elif [ "$php_command" = "drupal" ]; then
 
-      # Define the drupal console executable - assumed to be in the $PATH.
-      drupal_exec="`which drupal`"
+      # Discover the most appropriate drupal executable.
+
+      parentdir=`dirname $PWD`
+
+      if [ -f $parentdir"/vendor/bin/drupal" ]; then
+        # In a document root where the parent folder contains a vendor
+        # directory containing the drupal console executable installed
+        # with composer.
+        drupal_exec=$parentdir"/vendor/bin/drupal"
+
+      elif [ -f $PWD"/vendor/bin/drupal" ]; then
+        # In a document root where the current folder contains a vendor
+        # directory containing the drupal console executable installed
+        # with composer.
+        drupal_exec=$PWD"/vendor/bin/drupal"
+
+      elif [ -f "`which drupal`" ]; then
+        # Otherwise assumed to be in the $PATH.
+        drupal_exec="`which drupal`"
+
+      else
+        echo -e 'Discover failed for drupal console executable discovery'
+        exit 1
+      fi
+
+      if [ "$show_debug" == true ]; then
+        echo -e "Using drupal console executable at: "$drupal_exec
+      fi
 
       "$php_exec" "$php_options" "$drupal_exec" "$@"
 
