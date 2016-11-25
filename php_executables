@@ -126,11 +126,14 @@ php_executables () {
   if [ "$php_command" = "drush" ] || [ "$php_command" = "drupal" ]; then
 
     # cd into child directory (working Drupal install) if found.
-    if [ -d _www ]; then
-      cd _www
+    if [ -d web ]; then
+      cd web
       cd_child_dir=true
     elif [ -d www ]; then
       cd www
+      cd_child_dir=true
+    elif [ -d docroot ]; then
+      cd docroot
       cd_child_dir=true
     else
       cd_child_dir=false
@@ -168,7 +171,6 @@ php_executables () {
 
       else
         echo -e 'Discover failed for drupal console executable discovery'
-        exit 1
       fi
 
       if [ "$show_debug" == true ]; then
