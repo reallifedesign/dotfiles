@@ -3,7 +3,7 @@
 # Open a file in PHPStorm
 of() {
   # Remove trailing colon from path argument if exists 
-  echo $1 | sed "s/\(.*\):/\1/" | xargs pstorm
+  echo $1 | sed "s/:$//" | xargs phpstorm
 }
 
 # Find and replace within current directory
