@@ -23,24 +23,34 @@
 # If these defaults need to be overriden, don't edit this file.
 # Instead create a file at: ~/.php_settings and copy/paste the settings
 # between the ## START SETTINGS ## and ## END SETTINGS ## lines or just
-# the lines you wish to override.
+# the lines you wish to override. There is a condition to check the
+# major release version of Ubuntu as 16.04 is typically just for PHP7.
 
 declare -A php_settings_exec
 declare -A php_settings_options
 
 ## START SETTINGS - can be overriden in ~/.php_settings ##
 
-php_settings_exec[5.5]='/usr/bin/php5'
-php_settings_options[5.5]='-c /etc/php5/cli/php.ini'
+if [ "$(lsb_release -r -s | cut -d'.' -f1)" -ge "16" ]; then
 
-php_settings_exec[5.6]='/usr/bin/php5.6'
-php_settings_options[5.6]='-c /etc/php/5.6/cli/php.ini'
+  php_settings_exec[7.0]='/usr/bin/php'
+  php_settings_options[7.0]='-c /etc/php/7.0/cli/php.ini'
 
-php_settings_exec[7.0]='/usr/bin/php7.0'
-php_settings_options[7.0]='-c /etc/php/7.0/cli/php.ini'
+else
 
-php_settings_exec[hhvm]='/usr/bin/hhvm'
-php_settings_options[hhvm]='-c /etc/hhvm/php.ini'
+  php_settings_exec[5.5]='/usr/bin/php5'
+  php_settings_options[5.5]='-c /etc/php5/cli/php.ini'
+
+  php_settings_exec[5.6]='/usr/bin/php5.6'
+  php_settings_options[5.6]='-c /etc/php/5.6/cli/php.ini'
+
+  php_settings_exec[7.0]='/usr/bin/php7.0'
+  php_settings_options[7.0]='-c /etc/php/7.0/cli/php.ini'
+
+  php_settings_exec[hhvm]='/usr/bin/hhvm'
+  php_settings_options[hhvm]='-c /etc/hhvm/php.ini'
+
+fi
 
 ## END SETTINGS ##
 
@@ -52,7 +62,11 @@ fi
 php_executables () {
 
   # Define fallback PHP version is no config file is found.
-  php_version_default="5.6"
+  if [ "$(lsb_release -r -s | cut -d'.' -f1)" -ge "16" ]; then
+    php_version_default="7.0"
+  else
+    php_version_default="5.6"
+  fi
 
   # Define PHP version files.
   declare -A check_php_version_files
