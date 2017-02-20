@@ -13,8 +13,6 @@ fi
 # parses .bash_history and attempts to autocomplete the host you are trying to SSH to
 complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
 
-PATH="$PATH:/usr/local/opt/ruby/bin"
-
 # Drush aliases
 if [ -f ~/.drush/drush_bashrc ] ; then
  . ~/.drush/drush_bashrc

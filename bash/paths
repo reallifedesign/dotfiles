@@ -1,2 +1,7 @@
-export PATH="~/bin:~/.bin:/usr/local/homebrew/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/git/bin:$PATH"
+export PATH="$PATH:/usr/local/opt/ruby/bin"
+export PATH="$PATH:~/bin:~/.bin:/usr/local/homebrew/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/git/bin"
 export MANPATH="/usr/local/man:/usr/local/mysql/man:/usr/local/git/man:$MANPATH"
+
+# Give priority to web project bin path in the current directory and traversing
+# upwards once from current dir.
+export PATH="bin:../bin:$PATH"
