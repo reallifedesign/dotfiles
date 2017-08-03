@@ -9,6 +9,10 @@ function railsapp {
   rails $appname -m http://github.com/ryanb/rails-templates/raw/master/$template.rb $@
 }
 
+# systemd
+alias sctl="systemctl"
+alias jctl="journalctl"
+
 # cd
 alias ..='cd ..'
 
